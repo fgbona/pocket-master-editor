@@ -272,3 +272,22 @@ test('a tone kept by the assistant goes to the library, and a later conversation
   await expect(amp(page).getByText('Brit 800')).toBeVisible();
   expect(JSON.stringify(requests[2]!.input)).toContain('Saved tones (load_saved_tone):\\n- BLACK RHY: Metallica Black Album, rhythm');
 });
+
+test('an example request fills the message box, so a first-time user only has to press Send', async ({ page, pedal }) => {
+  await fakeGemini(page, []);
+  await connect(page, pedal);
+  await addKey(page);
+  await panel(page).getByRole('button', { name: 'Black Album rhythm tone' }).click();
+  await expect(panel(page).getByRole('textbox', { name: 'Message to the tone assistant' })).toHaveValue('Black Album rhythm tone');
+  await expect(panel(page).getByRole('textbox', { name: 'Message to the tone assistant' })).toBeFocused();
+});
+
+test('Google refusing the free tier in the person\'s region says so, with its list of regions', async ({ page, pedal }) => {
+  const region: Reply = { status: 400, body: { error: { code: 400, status: 'FAILED_PRECONDITION', message: 'User location is not supported for the API use.' } } };
+  await fakeGemini(page, [region]);
+  await connect(page, pedal);
+  await addKey(page);
+  await ask(page, 'hi');
+  await expect(panel(page).getByText(/Google does not offer the Gemini API where you are/)).toBeVisible();
+  await expect(panel(page).getByRole('link', { name: 'Where Gemini is available' })).toHaveAttribute('href', 'https://ai.google.dev/gemini-api/docs/available-regions');
+});

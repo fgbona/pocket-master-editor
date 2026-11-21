@@ -48,6 +48,9 @@ export class KeyError extends Error {
   }
 }
 
+/** Google does not offer the Gemini API (or its free tier) where the person is. */
+export class RegionError extends Error {}
+
 /** The text of a new message: the first carries the preset and the models, later ones the preset as it is now. */
 export function requestText(host: ToneHost, turns: readonly Turn[], message: string): string {
   const context = turns.length === 0 ? chatContext(host) : `Loaded preset now:\n${currentPresetText(host)}`;

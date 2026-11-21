@@ -945,6 +945,8 @@ button, select { font: inherit; color: inherit; }
 .assistant-message.is-user { background: color-mix(in srgb, var(--blue) 14%, transparent); justify-self: end; max-width: 85%; }
 .assistant-message.is-error { background: color-mix(in srgb, var(--red) 12%, transparent); }
 .assistant-message .changes { margin-top: 8px; }
+.assistant-examples { display: flex; flex-wrap: wrap; gap: 8px; }
+.assistant-examples p { flex-basis: 100%; margin: 0; }
 .assistant-input { display: flex; gap: 8px; }
 .assistant-input input { flex: 1; min-width: 0; padding: 8px 12px; border-radius: var(--radius-small); border: 1px solid var(--separator); background: var(--surface); color: var(--label); font: inherit; }
 .assistant-live { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

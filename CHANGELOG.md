@@ -8,6 +8,11 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Tone assistant: three example requests under the empty chat ("Black Album rhythm tone", a
+  clean chorus, an AC/DC crunch); a click puts one in the message box, so a first-time user
+  only has to press Send. The README animation now starts from one.
+- Tone assistant: when Google does not offer the Gemini API in the person's region, the chat
+  says so, with a link to Google's list of regions, instead of "Gemini answered 400".
 - Tone assistant and the preset library: when a tone sounds right, the assistant keeps it in
   the library under a short name with the reference it matches ("BLACK RHY — Metallica Black
   Album, rhythm"); the library goes with the first message, so asking for it again loads the

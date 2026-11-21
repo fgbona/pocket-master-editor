@@ -44,7 +44,9 @@ test('assistant media', async ({ page, pedal }) => {
   const amp = page.locator('section.block-amp');
   await amp.evaluate((e) => window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - 16));
   const start = Date.now();
-  await panel.getByRole('textbox', { name: 'Message to the tone assistant' }).pressSequentially('Black Album rhythm tone', { delay: 70 });
+  await page.waitForTimeout(800);
+  await panel.getByRole('button', { name: 'Black Album rhythm tone' }).click(); // a first-time user starts from an example
+  await page.waitForTimeout(900);
   await panel.getByRole('button', { name: 'Send' }).click();
   await panel.getByText(REPLY).waitFor();
   await page.waitForTimeout(2500); // the tube warms up, the reader reads

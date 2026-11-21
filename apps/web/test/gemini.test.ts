@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { decodePreset, applyEdit, type Edit, type Preset, type ToneHost } from '@pocket-master/core';
 import { realP08 } from '../../../packages/core/test/fake-pedal.ts';
 import { converseGemini as converse, GEMINI_MODELS, testGeminiKey as testKey } from '../lib/gemini.ts';
-import { KeyError, QuotaError, toToolSchema as toGeminiSchema } from '../lib/assistant.ts';
+import { KeyError, QuotaError, RegionError, toToolSchema as toGeminiSchema } from '../lib/assistant.ts';
 
 const KEY = 'AIzaTESTKEY-0000000000000000000000000';
 const SLOTS = { irNames: [null, null, null, null, null], profileNames: [null, null, null, null, null] };
@@ -133,4 +133,14 @@ test('a per-minute 429 without a retry delay pauses a minute; a daily one until 
     fetchFn: scripted({ status: 429, body: { error: { status: 'RESOURCE_EXHAUSTED', details: [{ '@type': 'type.googleapis.com/google.rpc.QuotaFailure', violations: [{ quotaId }] }] } } }).fetchFn }).then(() => { throw new Error('expected a quota error'); }, (x) => x as QuotaError);
   assert.equal((await run('GenerateRequestsPerMinutePerProjectPerModel-FreeTier')).retryAt.toISOString(), '2026-11-21T20:01:00.000Z');
   assert.equal((await run('GenerateRequestsPerDayPerProjectPerModel-FreeTier')).retryAt.toISOString(), '2026-11-22T08:00:00.000Z');
+});
+
+test('Google refusing the free tier where the person is gives a region error, not a generic one', async () => {
+  const { h } = host();
+  const region = { status: 400, body: { error: { code: 400, status: 'FAILED_PRECONDITION', message: 'User location is not supported for the API use.' } } };
+  const e = await converse({ key: KEY, model: 'flash', turns: [], message: 'x', host: h, fetchFn: scripted(region).fetchFn, onRequest: () => {} }).catch((x) => x);
+  assert.ok(e instanceof RegionError);
+  const other = { status: 400, body: { error: { code: 400, status: 'FAILED_PRECONDITION', message: 'Something else.' } } };
+  const e2 = await converse({ key: KEY, model: 'flash', turns: [], message: 'x', host: h, fetchFn: scripted(other).fetchFn, onRequest: () => {} }).catch((x) => x);
+  assert.ok(!(e2 instanceof RegionError));
 });

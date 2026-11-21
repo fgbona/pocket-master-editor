@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { comparePresets, type Difference, type ToneHost, type ToneSnapshot } from '@pocket-master/core';
 import { loadKey, maskKey, removeKey, saveKey } from '@/lib/aiKey';
 import { nextReset, recordRequest, usedToday, useAiUsage } from '@/lib/aiUsage';
-import { ask, KeyError, providerOf, QuotaError, ROUTE, type AiModel, type Converse, type Cooldown, type Provider, type Turn } from '@/lib/assistant';
+import { ask, KeyError, providerOf, QuotaError, RegionError, ROUTE, type AiModel, type Converse, type Cooldown, type Provider, type Turn } from '@/lib/assistant';
 import { converseGemini, GEMINI_MODELS, testGeminiKey } from '@/lib/gemini';
 import { converseGroq, GROQ_MODEL, testGroqKey } from '@/lib/groq';
 import type { MessageKey } from '@/lib/i18n';
@@ -22,7 +22,11 @@ interface Message {
   readonly text: string;
   readonly changes?: readonly Difference[];
   readonly model?: AiModel;
+  readonly link?: { readonly href: string; readonly text: string };
 }
+
+const REGIONS = 'https://ai.google.dev/gemini-api/docs/available-regions';
+const EXAMPLES = ['assistant.example1', 'assistant.example2', 'assistant.example3'] as const;
 
 const CONVERSE: Readonly<Record<AiModel, Converse>> = { groq: converseGroq, flash: converseGemini, lite: converseGemini };
 const MODELS: Readonly<Record<AiModel, { readonly name: string; readonly limit: number; readonly pacificReset: boolean }>> = {
@@ -125,6 +129,7 @@ export function AssistantPanel({ host, liveEdit, onLiveEdit }: Props) {
   const usage = useAiUsage();
   const warnedKeys = useRef(new Set<Provider>());
   const end = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const stored: Partial<Record<Provider, string>> = {};
@@ -172,10 +177,12 @@ export function AssistantPanel({ host, liveEdit, onLiveEdit }: Props) {
       const text = error instanceof QuotaError && error.partial && error.model ? t('assistant.quotaPartial', { model: MODELS[error.model].name })
         : error instanceof QuotaError ? t('assistant.quotaAll', { time: time(error.retryAt) })
         : error instanceof KeyError ? t('assistant.keyRejected', { provider: PROVIDER_NAME[error.provider] })
+        : error instanceof RegionError ? t('assistant.region')
           : t('assistant.error', { reason: error instanceof Error ? error.message : String(error) });
       // The next answer is told this one was cut, so a model does not lose the request (the preset it gets is current).
       setTurns((h) => [...h, { role: 'user', text: message }, { role: 'assistant', text: `(This answer was interrupted: ${error instanceof Error ? error.message : String(error)})` }]);
-      setMessages((m) => [...m, { role: 'error', text, changes: before ? changed(before, host.snapshot()) : [] }]);
+      const link = error instanceof RegionError ? { href: REGIONS, text: t('assistant.regionLink') } : undefined;
+      setMessages((m) => [...m, { role: 'error', text, link, changes: before ? changed(before, host.snapshot()) : [] }]);
     } finally {
       setWorking(false);
     }
@@ -228,11 +235,18 @@ export function AssistantPanel({ host, liveEdit, onLiveEdit }: Props) {
           </>
         ) : (
           <>
-            {messages.length === 0 && <p className="muted">{t('assistant.hint')}</p>}
+            {messages.length === 0 && (
+              <div className="assistant-examples">
+                <p className="muted">{t('assistant.hint')}</p>
+                {EXAMPLES.map((k) => (
+                  <button key={k} type="button" className="btn btn-small" onClick={() => { setDraft(t(k)); input.current?.focus(); }}>{t(k)}</button>
+                ))}
+              </div>
+            )}
             <ol className="assistant-messages" aria-live="polite">
               {messages.map((m, i) => (
                 <li key={i} className={`assistant-message is-${m.role}`}>
-                  <p>{m.text}</p>
+                  <p>{m.text}{m.link && <> <a href={m.link.href} target="_blank" rel="noreferrer">{m.link.text}</a></>}</p>
                   {m.changes && m.changes.length > 0 && <Changes differences={m.changes} label={label} title={t('assistant.changes')} />}
                   {m.model && <p className="muted small assistant-via">{t('assistant.via', { model: MODELS[m.model].name })}</p>}
                 </li>
@@ -246,7 +260,7 @@ export function AssistantPanel({ host, liveEdit, onLiveEdit }: Props) {
               </p>
             )}
             <form className="assistant-input" onSubmit={(e) => { e.preventDefault(); void send(); }}>
-              <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t('assistant.placeholder')} aria-label={t('assistant.inputAria')} disabled={working} />
+              <input ref={input} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t('assistant.placeholder')} aria-label={t('assistant.inputAria')} disabled={working} />
               <button type="submit" className="btn btn-primary" disabled={working || !draft.trim()}>{t('assistant.send')}</button>
             </form>
             <ul className="muted small assistant-usage">
