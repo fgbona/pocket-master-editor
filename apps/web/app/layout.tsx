@@ -7,9 +7,15 @@ import { THEME_BOOT_SCRIPT } from '@/components/ThemeToggle';
 /** The script lettering on the amp's faceplate; self-hosted by Next, so it works offline. */
 const script = Yellowtail({ weight: '400', subsets: ['latin'], variable: '--font-script', display: 'swap' });
 
+const DESCRIPTION = 'Free editor for the Sonicake Pocket Master, over USB or Bluetooth: edit live, save with a backup, install TONE3000 captures, or describe a tone and let a free AI build it.';
+
 export const metadata: Metadata = {
+  // Link previews need absolute URLs: the Pages workflow sets SITE_URL (the origin; Next adds the basePath).
+  metadataBase: process.env.SITE_URL ? new URL(process.env.SITE_URL) : undefined,
   title: 'Pocket Master Editor',
-  description: 'Free browser editor for the Sonicake Pocket Master over USB MIDI.',
+  description: DESCRIPTION,
+  openGraph: { title: 'Pocket Master Editor', description: DESCRIPTION, type: 'website' },
+  twitter: { card: 'summary_large_image' },
 };
 
 export const viewport: Viewport = {

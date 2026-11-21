@@ -8,6 +8,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Link previews: sharing the site's address (WhatsApp, Discord, social networks) shows the
+  editor's picture and a description that names Bluetooth, TONE3000 and the tone assistant.
 - Tone assistant and the preset library: when a tone sounds right, the assistant keeps it in
   the library under a short name with the reference it matches ("BLACK RHY — Metallica Black
   Album, rhythm"); the library goes with the first message, so asking for it again loads the
