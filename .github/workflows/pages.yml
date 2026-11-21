@@ -34,6 +34,7 @@ jobs:
           PAGES_DOMAIN: ${{ vars.PAGES_DOMAIN }}
         run: |
           if [ -n "$PAGES_DOMAIN" ]; then export NEXT_BASE_PATH=""; else export NEXT_BASE_PATH="/${GITHUB_REPOSITORY#*/}"; fi
+          if [ -n "$PAGES_DOMAIN" ]; then export SITE_URL="https://$PAGES_DOMAIN"; else export SITE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io"; fi
           npm run build -w @pocket-master/web
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
