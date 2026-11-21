@@ -1,0 +1,50 @@
+name: Something does not work
+description: The editor, the desktop app, the tone assistant or the MCP server did something wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead. Screenshots help.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - Web editor (browser)
+        - Desktop app
+        - MCP server (Claude Code, Claude Desktop…)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Editor version
+      description: The release you installed (desktop app or MCP server), or the date you used the website.
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection to the pedal
+      options:
+        - USB
+        - Bluetooth
+        - Not connected
+  - type: input
+    id: system
+    attributes:
+      label: System and browser
+      placeholder: macOS 15 / Chrome 142, Windows 11 / Edge, Android 15 / Chrome…
+  - type: input
+    id: firmware
+    attributes:
+      label: Pedal firmware
+      description: Global options in the editor shows it (Firmware). The editor was tested on V1.3.3.
+  - type: textarea
+    id: log
+    attributes:
+      label: MIDI log (optional)
+      description: The editor's MIDI log, if the problem is about the pedal. It holds only what went to and from the pedal.
+      render: text

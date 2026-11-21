@@ -1,0 +1,11 @@
+name: Idea
+description: Something the editor could do.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to do
+      description: Describe what you want to do with the pedal, rather than how the editor should do it.
+    validations:
+      required: true
