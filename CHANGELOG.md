@@ -8,6 +8,9 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- SECURITY.md: how to report a security problem privately, and everything the editor keeps in
+  the browser, under which storage key. Issue forms for bugs (where, version, USB or Bluetooth,
+  system, pedal firmware, MIDI log) and ideas.
 - Tone assistant and the preset library: when a tone sounds right, the assistant keeps it in
   the library under a short name with the reference it matches ("BLACK RHY — Metallica Black
   Album, rhythm"); the library goes with the first message, so asking for it again loads the
