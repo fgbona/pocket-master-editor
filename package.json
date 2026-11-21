@@ -1,6 +1,6 @@
 {
   "name": "pocket-master-editor",
-  "version": "0.13.8",
+  "version": "0.14.0",
   "private": true,
   "type": "module",
   "workspaces": [

@@ -1,6 +1,6 @@
 {
   "name": "@pocket-master/desktop",
-  "version": "0.13.8",
+  "version": "0.14.0",
   "private": true,
   "description": "Pocket Master Editor as a desktop app: works offline and updates itself.",
   "author": "Fernando Bona",

@@ -6,6 +6,18 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-21
+
+**Describe a tone, get it on the pedal.** The new tone assistant turns "Black Album rhythm
+tone" or "warmer, less gain" into models and knob settings, live, and lists what changed. It
+runs on your own free AI key, Groq (about 1,000 requests a day) or Google Gemini, called
+straight from the editor and the desktop app, with no server of ours; saving still goes
+through the Save dialog you confirm. Also new: undo and redo for live edits, a preset library,
+a comparison before importing a preset file, and the pedal's firmware version in Global
+options.
+
+![The tone assistant building a Black Album rhythm tone](https://raw.githubusercontent.com/fgbona/sonicake-pocket-master-editor/main/docs/media/assistant.jpg)
+
 ### Added
 
 - Tone assistant and the preset library: when a tone sounds right, the assistant keeps it in
@@ -28,25 +40,6 @@ and the project uses [Semantic Versioning](https://semver.org/).
 - `npm run e2e:live` (with `GROQ_API_KEY` and/or `GEMINI_API_KEY`) checks each real
   provider; it replaces `npm run e2e:gemini`.
 
-### Fixed
-
-- Tone assistant, smaller fixes before release:
-  - A Groq quota without a retry time now waits for the reset Groq states, or an hour for
-    a daily limit, instead of retrying every minute; a Gemini per-minute quota without one
-    pauses a minute instead of until Pacific midnight.
-  - A malformed tool call from Groq's model (`tool_use_failed`) is retried once.
-  - When the browser will not store a key, the panel says it lasts until the page closes.
-  - An interrupted answer is kept in what the next one is told, so the request is not lost.
-- Tone assistant routing (review of the Groq change): a model whose free requests run out
-  after it already changed the sound no longer hands the message to the next model, which
-  would do it again ("more gain" twice); the panel says the answer was cut and to send it
-  again. A provider that refuses its key while another answers is reported once instead of
-  failing quietly on every message. Each model's pause is kept as the router learns it.
-- Tone assistant: `save_preset` also stops when the person loaded another preset during a
-  reply, like the other tools that change the pedal.
-
-### Added
-
 - **Tone assistant** in the editor: describe a sound and it is built on the pedal, live.
   It uses Google Gemini with the person's own free API key, called straight from the editor
   (no server; Google keeps no conversation, as it runs in stateless mode).
@@ -62,14 +55,6 @@ and the project uses [Semantic Versioning](https://semver.org/).
   - A notice that what is written and the loaded preset go to Google.
   - `npm run e2e:gemini` (with `GEMINI_API_KEY` set) checks it against the real Gemini;
     every other test simulates Gemini.
-
-### Changed
-
-- The tone tools (turning "AMP gain 70" into an edit, and the preset and model text an
-  assistant reads) moved from the MCP server into the shared core, with a chat version of the
-  tool set for the editor's upcoming tone assistant. The MCP server behaves exactly as before.
-
-### Added
 
 - The editor reads the pedal's firmware version on connecting: *Global options* shows it,
   and a notice appears when it is not V1.3.3, the version the editor was tested on. The MCP
@@ -88,9 +73,30 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- The tone tools (turning "AMP gain 70" into an edit, and the preset and model text an
+  assistant reads) moved from the MCP server into the shared core, with a chat version of the
+  tool set for the editor's upcoming tone assistant. The MCP server behaves exactly as before.
+
 - The Windows self-update check now closes the "downloaded" box (Later) and then the app,
   the install-on-quit path; it used to rely on the box's old "close means Restart now"
   behaviour fixed in 0.13.7. 0.13.7 -> 0.13.8 verified this way.
+
+### Fixed
+
+- Tone assistant, smaller fixes before release:
+  - A Groq quota without a retry time now waits for the reset Groq states, or an hour for
+    a daily limit, instead of retrying every minute; a Gemini per-minute quota without one
+    pauses a minute instead of until Pacific midnight.
+  - A malformed tool call from Groq's model (`tool_use_failed`) is retried once.
+  - When the browser will not store a key, the panel says it lasts until the page closes.
+  - An interrupted answer is kept in what the next one is told, so the request is not lost.
+- Tone assistant routing (review of the Groq change): a model whose free requests run out
+  after it already changed the sound no longer hands the message to the next model, which
+  would do it again ("more gain" twice); the panel says the answer was cut and to send it
+  again. A provider that refuses its key while another answers is reported once instead of
+  failing quietly on every message. Each model's pause is kept as the router learns it.
+- Tone assistant: `save_preset` also stops when the person loaded another preset during a
+  reply, like the other tools that change the pedal.
 
 ## [0.13.8] - 2026-11-21
 
@@ -922,7 +928,8 @@ Container image: `ghcr.io/fgbona/sonicake-pocket-master-editor:v0.1.0`.
 - An out-of-range preset index from the pedal shows an error instead of
   crashing the page.
 
-[Unreleased]: https://github.com/fgbona/sonicake-pocket-master-editor/compare/v0.13.8...HEAD
+[Unreleased]: https://github.com/fgbona/sonicake-pocket-master-editor/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/fgbona/sonicake-pocket-master-editor/compare/v0.13.8...v0.14.0
 [0.13.8]: https://github.com/fgbona/sonicake-pocket-master-editor/compare/v0.13.7...v0.13.8
 [0.13.7]: https://github.com/fgbona/sonicake-pocket-master-editor/compare/v0.13.6...v0.13.7
 [0.13.6]: https://github.com/fgbona/sonicake-pocket-master-editor/compare/v0.13.5...v0.13.6

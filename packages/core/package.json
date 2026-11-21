@@ -1,6 +1,6 @@
 {
   "name": "@pocket-master/core",
-  "version": "0.13.8",
+  "version": "0.14.0",
   "description": "Sonicake Pocket Master SysEx protocol: framing, decoding and model catalog. No browser or MIDI dependency.",
   "type": "module",
   "license": "MIT",
